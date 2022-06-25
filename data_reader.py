@@ -10,7 +10,9 @@ import data_cleaner as dc
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-
+def create_directory_if_not_exists(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
 def read_csv(date):
     """Reads the istdaten csv file from the configured data directory for a given date
@@ -31,6 +33,7 @@ def read_csv(date):
         config['data']['directory'],
         date.strftime("%Y-%m-%d_istdaten.csv")
     )
+    create_directory_if_not_exists(config['data']['directory'])
     df = pd.read_csv(filename, sep=';', dtype=str)
     return df
 
@@ -54,6 +57,7 @@ def save_dataframe_to_parquet( df, date):
         config['data']['directory'],
         date.strftime("%Y-%m-%d_istdaten.parquet")
     )
+    create_directory_if_not_exists(config['data']['directory'])
     df.to_parquet(filename)
 
 def read_dataframe_from_parquet(date):
@@ -75,6 +79,7 @@ def read_dataframe_from_parquet(date):
         config['data']['directory'],
         date.strftime("%Y-%m-%d_istdaten.parquet")
         )
+    create_directory_if_not_exists(config['data']['directory'])
     df = pd.read_parquet(filename)
     return df
 
@@ -105,6 +110,7 @@ def download_archive(date):
         config['data']['directory'],
         date.strftime('ist-daten-%Y-%m.zip')
     )
+    create_directory_if_not_exists(config['data']['directory'])
     with open(path, 'wb') as f:
         total_length = int(r.headers.get('content-length'))
         for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length / 1024) + 1):
@@ -140,6 +146,7 @@ def read_data(date):
         config['data']['directory'],
         date.strftime("%Y-%m-%d_istdaten.parquet")
     )
+    create_directory_if_not_exists(config['data']['directory'])
     if os.path.exists(filename):
         return read_dataframe_from_parquet(date)
 
@@ -184,6 +191,7 @@ def read_cleaned_data(date):
         config['data']['directory'],
         date.strftime("%Y-%m-%d_istdaten_cleaned.parquet")
     )
+    create_directory_if_not_exists(config['data']['directory'])
     if os.path.exists(filename):
         return pd.read_parquet(filename)
 
@@ -212,6 +220,7 @@ def read_prepared_data(date):
         config['data']['directory'],
         date.strftime("%Y-%m-%d_istdaten_prepared.parquet")
     )
+    create_directory_if_not_exists(config['data']['directory'])
     if os.path.exists(filename):
         return pd.read_parquet(filename)
     ## prepared data is cleaned data that is prepared ##
@@ -244,6 +253,7 @@ def read_cleaned_data_from_daterange(date_start, date_end):
     delta = date_end - date_start
     dates = [date_start + datetime.timedelta(days=i) for i in range(delta.days + 1)]
     dfs = []
+
     for date in dates:
         df = read_cleaned_data(date)
         dfs.append(df)
