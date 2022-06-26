@@ -18,7 +18,7 @@ def remove_unnecessary_columns(df):
         The istdaten DataFrame without the unnecessary columns
     """
 
-    df.drop(columns= [ 'BETREIBER_ID', 'LINIEN_ID', 'PRODUKT_ID', 'UMLAUF_ID',
+    df.drop(columns= [ 'BETREIBER_ID', 'LINIEN_ID', 'UMLAUF_ID',
                      'VERKEHRSMITTEL_TEXT', 'FAELLT_AUS_TF'], inplace=True)
     return df
 
@@ -212,7 +212,7 @@ def remove_crazy_delays_abfahrt(df):
         The istdaten DataFrame without crazy delays.
     """
 
-    df = df[(df['ABFAHRTSVERSPAETUNG_s'] > timedelta(hours=-1) / timedelta(seconds=1)) & (
+    df = df[(df['ABFAHRTSVERSPAETUNG_s'] > timedelta(minutes=-10) / timedelta(seconds=1)) & (
                 df['ABFAHRTSVERSPAETUNG_s'] < timedelta(hours=1) / timedelta(seconds=1))]
 
     return df
@@ -232,13 +232,13 @@ def remove_crazy_delays_ankunft(df):
         The istdaten DataFrame without crazy delays.
     """
 
-    df = df[(df['ANKUNFTSVERSPAETUNG_s'] > timedelta(hours=-1) / timedelta(seconds=1)) & (
+    df = df[(df['ANKUNFTSVERSPAETUNG_s'] > timedelta(minutes=-10) / timedelta(seconds=1)) & (
                 df['ANKUNFTSVERSPAETUNG_s'] < timedelta(hours=1) / timedelta(seconds=1))]
 
     return df
 
 
-def clean_data(df):
+def clean_data_abfahrt(df):
     """Perform several cleaning steps, see below
 
     Parameters
@@ -278,6 +278,6 @@ def prepare_data(df):
     """
 
     df = select_sbb(df)
-    df = clean_data(df)
+    df = clean_data_abfahrt(df)
     #df = remove_crazy_delays(df)
     return df

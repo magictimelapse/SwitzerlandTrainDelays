@@ -196,7 +196,7 @@ def read_cleaned_data(date):
         return pd.read_parquet(filename)
 
     df = read_data(date)
-    df = dc.clean_data(df)
+    df = dc.clean_data_abfahrt(df)
     df.to_parquet(filename)
     return df
 
