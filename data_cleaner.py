@@ -178,23 +178,23 @@ def calculate_delay_abfahrt(df):
     df['ABFAHRTSVERSPAETUNG_s'] = (df['AB_PROGNOSE'] - df['ABFAHRTSZEIT']) / pd.Timedelta(seconds=1)
     return df
 
-    def calculate_delay_ankunft(df):
-        """Add a column to the istdaten df corresponding to  arrival delays, measured in seconds.
+def calculate_delay_ankunft(df):
+    """Add a column to the istdaten df corresponding to  arrival delays, measured in seconds.
 
-        Parameters
-        ----------
-        df : pd.DataFrame
-            the istdaten DataFrame
+    Parameters
+    ----------
+    df : pd.DataFrame
+        the istdaten DataFrame
 
 
-        Returns
-        -------
-        pd.DataFrame
-            The istdaten DataFrame with the new delay columns.
-        """
+    Returns
+    -------
+    pd.DataFrame
+        The istdaten DataFrame with the new delay columns.
+    """
 
-        df['ANKUNFTSVERSPAETUNG_s'] = (df['AN_PROGNOSE'] - df['ANKUNFTSZEIT']) / pd.Timedelta(seconds=1)
-        return df
+    df['ANKUNFTSVERSPAETUNG_s'] = (df['AN_PROGNOSE'] - df['ANKUNFTSZEIT']) / pd.Timedelta(seconds=1)
+    return df
 
 # no train in switzerland has a delay longer than 1 hour
 def remove_crazy_delays_abfahrt(df):
@@ -255,10 +255,11 @@ def clean_data_abfahrt(df):
 
     df = select_trains(df)
     df = remove_unnecessary_columns(df)
-    df = convert_to_datetimes(df)
     df = real_prognose_filter_abfahrt(df)
     df = bad_data_filter_abfahrt(df)
+    df = convert_to_datetimes(df)
     df = calculate_delay_abfahrt(df)
+    df = remove_crazy_delays_abfahrt(df)
 
     return df
 
