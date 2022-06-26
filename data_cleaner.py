@@ -257,6 +257,7 @@ def convert_to_categorical(df):
         if df[c].dtype == 'object':
             df[c] = df[c].astype("category")
     pd.options.mode.chained_assignment = 'warn'
+    return df
 
 def clean_data_abfahrt(df):
     """Perform several cleaning steps, see below
