@@ -169,7 +169,31 @@ def read_data(date):
     save_dataframe_to_parquet(df, date)
     return df
 
+def read_data_from_daterange(date_start, date_end):
+    """Reads the parquet files for a istdaten df for a given daterange
 
+    Parameters
+    ----------
+    date_start : datetime.datetime
+        The date where one wishes to start reading the  istdaten DataFrame
+    date_end : datetime.datetime
+        The date where one wishes to stop reading the  istdaten DataFrame
+
+
+    Returns
+    -------
+    pd.DataFrame
+        The dateframe corresponding to the istdaten  data from within the daterange.
+    """
+
+    delta = date_end - date_start
+    dates = [date_start + datetime.timedelta(days=i) for i in range(delta.days + 1)]
+    dfs = []
+
+    for date in dates:
+        df = read_data(date)
+        dfs.append(df)
+    return pd.concat(dfs)
 
 def read_cleaned_data(date):
     """Reads the parquet file for a cleaned istdaten df. In case it does not exist, it reads the uncleaned file,
