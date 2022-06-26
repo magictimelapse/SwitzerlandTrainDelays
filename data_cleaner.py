@@ -237,6 +237,26 @@ def remove_crazy_delays_ankunft(df):
 
     return df
 
+def convert_to_categorical(df):
+    """Converts the columns of the df that are not datetime or float objects to categorical
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        the istdaten DataFrame
+
+
+    Returns
+    -------
+    pd.DataFrame
+        The  istdaten DataFrame with categorical data
+    """
+    # switch off annoying warnings
+    pd.options.mode.chained_assignment = None
+    for c in df.columns:
+        if df[c].dtype == 'object':
+            df[c] = df[c].astype("category")
+    pd.options.mode.chained_assignment = 'warn'
 
 def clean_data_abfahrt(df):
     """Perform several cleaning steps, see below
@@ -260,6 +280,7 @@ def clean_data_abfahrt(df):
     df = convert_to_datetimes(df)
     df = calculate_delay_abfahrt(df)
     df = remove_crazy_delays_abfahrt(df)
+    df = convert_to_categorical(df)
 
     return df
 
